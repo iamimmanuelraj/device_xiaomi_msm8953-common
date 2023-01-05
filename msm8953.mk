@@ -147,6 +147,15 @@ PRODUCT_PACKAGES += \
     android.hardware.drm-service.clearkey \
     android.hardware.drm@1.4.vendor
 
+# Fastbootd
+ifeq ($(PRODUCT_RETROFIT_DYNAMIC_PARTITIONS), true)
+PRODUCT_PACKAGES += \
+    fastbootd
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.fastbootd.available=true
+endif
+
 # FM
 PRODUCT_PACKAGES += \
     FMRadio \
@@ -299,9 +308,22 @@ PRODUCT_PACKAGES += \
     init.qcom.sh \
     init.qcom.post_boot.sh
 
+ifeq ($(AB_OTA_UPDATER), true)
+ifeq ($(PRODUCT_RETROFIT_DYNAMIC_PARTITIONS),true)
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/etc/fstab_AB.qcom:$(TARGET_COPY_OUT_RECOVERY)/root/first_stage_ramdisk/fstab.qcom
+endif
+endif
+
 # Remove unwanted packages
 PRODUCT_PACKAGES += \
     RemovePackages
+
+# Retrofit Dynamic Partitions
+ifeq ($(PRODUCT_RETROFIT_DYNAMIC_PARTITIONS),true)
+PRODUCT_PACKAGES += \
+    check_dynamic_partitions
+endif
 
 # RIL
 PRODUCT_PACKAGES += \
